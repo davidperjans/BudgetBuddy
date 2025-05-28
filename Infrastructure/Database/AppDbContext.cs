@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Infrastructure.Database
 {
@@ -13,9 +14,12 @@ namespace Infrastructure.Database
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
+            
         }
         // Define DbSets for your entities here
         public DbSet<Category> Categories { get; set; }
+        
+        public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -1,6 +1,6 @@
 namespace Application.DTOs
 {
-    public class LoginUserResponeDto
+    public class LoginUserResponseDto
     {
         public string Token { get; set; } 
         public string UserName { get; set; }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Services;
 
 namespace Infrastructure
 {
@@ -44,6 +45,8 @@ namespace Infrastructure
             });
 
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IPasswordService, BcryptPasswordService>();
+
 
             return services;
         }
