@@ -40,6 +40,19 @@ namespace Infrastructure.Repositories
             return await _appDbContext.Categories.AnyAsync(c => c.Name.ToLower() == name.ToLower());
         }
 
+        public async Task<List<Category>> GetAllByUserIdAsync(Guid userId, CancellationToken token)
+        {
+            return await _appDbContext.Categories
+                .Where(c => c.UserId == userId)
+                .ToListAsync(token);
+        }
+
+        public async Task<Category?> GetByIdAsync(Guid categoryid, CancellationToken token)
+        {
+            return await _appDbContext.Categories.FirstOrDefaultAsync(c => c.CategoryId == categoryid, token);
+        }
+
+
 
     }
 }
