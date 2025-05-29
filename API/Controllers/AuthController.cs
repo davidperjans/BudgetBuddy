@@ -29,5 +29,17 @@ namespace API.Controllers
             return Ok(result.Data);
 
         }
+        
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterUserDto dto)
+        {
+            var result = await _mediator.Send(new RegisterUserCommand(dto));
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Errors);
+
+            return Ok(result.Data);
+        }
+
     }
 }
