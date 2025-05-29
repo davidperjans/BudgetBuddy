@@ -45,6 +45,8 @@ namespace Infrastructure
             });
 
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+
+            services.AddScoped<ICategoryRepository, CategoryRepository>();//Såhär ser alla Repositorys ut-
             services.AddScoped<IPasswordService, BcryptPasswordService>();
 
 
