@@ -18,11 +18,11 @@ public class GetAllUsersHandler : IRequestHandler<GetAllUsersQuery, OperationRes
     {
         var users = await _userRepo.GetAllAsync();
 
-        var userDtos = users.Select(u => new UserDto
+        var userDtos = users.Select(user => new UserDto
         {
-            UserId = u.UserId,
-            Email = u.Email,
-            UserName = u.UserName
+            UserId = user.UserId,
+            Email = user.Email,
+            UserName = user.UserName
         }).ToList();
 
         return OperationResult<List<UserDto>>.Success(userDtos);
