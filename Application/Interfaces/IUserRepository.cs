@@ -7,5 +7,6 @@ namespace Application.Interfaces
         Task<bool> ExistsByEmailAsync(string email);
         Task AddAsync(User user);
         Task<User?> GetByEmailAsync(string email);
+        Task<List<User>> GetAllAsync();
     }
 }

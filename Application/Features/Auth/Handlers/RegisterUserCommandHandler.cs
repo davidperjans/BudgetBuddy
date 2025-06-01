@@ -24,6 +24,10 @@ namespace Application.Features.Auth.Handlers
 
         public async Task<OperationResult<string>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
+            try
+            {
+                
+            
             var validationResult = await _validator.ValidateAsync(request.Dto);
             if (!validationResult.IsValid)
             {
@@ -45,6 +49,13 @@ namespace Application.Features.Auth.Handlers
 
             await _userRepo.AddAsync(user);
             return OperationResult<string>.Success("Användare registrerad.");
+            
+            }
+            catch (Exception ex)
+            {
+                // Logga undantaget här om nödvändigt
+                return OperationResult<string>.Failure($"Ett fel uppstod: {ex.Message}");
+            }
         }
     }
 }
