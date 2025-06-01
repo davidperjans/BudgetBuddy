@@ -48,6 +48,9 @@ namespace Infrastructure
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();//Såhär ser alla Repositorys ut-
             services.AddScoped<IPasswordService, BcryptPasswordService>();
+            services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddScoped<IUserRepository, UserRepository>(); 
+
 
 
             return services;
