@@ -39,6 +39,18 @@ namespace API
                 });
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("FrontendPolicy", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:5173") // eller den port din frontend körs på
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
             builder.Services.AddApplicationServices().AddInfrastructureServices(builder.Configuration);
 
             var app = builder.Build();
@@ -53,6 +65,8 @@ namespace API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("FrontendPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
