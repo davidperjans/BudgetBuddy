@@ -30,7 +30,7 @@ namespace Application.Features.Auth.Handlers
             var dto = request.Dto;
 
             User? user = await _userRepo.GetByEmailAsync(dto.Email); 
-            if (user == null || !_passwordService.VerifyPassword(dto.Password, user.PasswordHash))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
                 return OperationResult<LoginUserResponseDto>.Failure(InvalidCredentialsMessage);
             }
