@@ -1,4 +1,6 @@
-﻿namespace Domain.Models
+﻿using Domain.Entities;
+
+namespace Domain.Entities
 {
     public class Category
     {
@@ -7,6 +9,6 @@
         public string Name { get; set; } = string.Empty;
 
         // 🔄 Navigation property – länkar till användaren som äger kategorin
-        //public User? User { get; set; }
+        public User? User { get; set; }
     }
 }

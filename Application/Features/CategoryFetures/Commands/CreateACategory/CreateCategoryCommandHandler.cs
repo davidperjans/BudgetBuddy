@@ -1,7 +1,7 @@
 ﻿using Application.Common;
 using Application.Interfaces;
 using AutoMapper;
-using Domain.Models;
+using Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;

@@ -4,7 +4,7 @@ using Infrastructure.Repositories;
 using Application.DTOs;
 using AutoMapper;
 using FluentValidation;
-using Domain.Models;
+using Domain.Entities;
 
 namespace Tests;
 
