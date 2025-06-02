@@ -10,7 +10,7 @@ namespace Application.Interfaces
     public interface ICategoryRepository
     {
         Task AddAsync(Category category);
-        Task<bool>DoseCategoryExistAsync(string name);
+        Task<bool>DoseCategoryExistAsync(string name, Guid userId);
         Task<bool> DeleteCategory(Guid categoryid);
         Task<List<Category>> GetAllByUserIdAsync(Guid userId, CancellationToken token);
         Task<Category?> GetByIdAsync(Guid categoryid, CancellationToken token);

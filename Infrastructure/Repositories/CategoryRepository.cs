@@ -35,9 +35,9 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> DoseCategoryExistAsync(string name)
+        public async Task<bool> DoseCategoryExistAsync(string name, Guid userId)
         {
-            return await _appDbContext.Categories.AnyAsync(c => c.Name.ToLower() == name.ToLower());
+            return await _appDbContext.Categories.AnyAsync(c => c.Name.ToLower() == name.ToLower() && c.UserId == userId);
         }
 
         public async Task<List<Category>> GetAllByUserIdAsync(Guid userId, CancellationToken token)
