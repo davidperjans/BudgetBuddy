@@ -59,6 +59,26 @@ namespace API.Controllers
 
             return Ok(result.Data);
         }
+        [HttpGet("user/{userId}/month/{year}/{month}")]
+        public async Task<IActionResult> GetByMonth(Guid userId, int year, int month)
+        {
+            var result = await _mediator.Send(new GetTransactionsByMonthQuery(userId, year, month));
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Errors);
+
+            return Ok(result.Data);
+        }
+        [HttpGet("user/{userId}/statistics")]
+        public async Task<IActionResult> GetStatistics(Guid userId)
+        {
+            var result = await _mediator.Send(new GetTransactionStatisticsQuery(userId));
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Errors);
+
+            return Ok(result.Data);
+        }
 
     }
 }
