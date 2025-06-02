@@ -38,5 +38,27 @@ namespace API.Controllers
 
             return Ok(result.Data);
         }
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateTransactionDto dto)
+        {
+            var result = await _mediator.Send(new UpdateTransactionCommand(dto));
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Errors);
+
+            return Ok(result.Data);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] DeleteTransactionDto dto)
+        {
+            var result = await _mediator.Send(new DeleteTransactionCommand(dto));
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Errors);
+
+            return Ok(result.Data);
+        }
+
     }
 }
