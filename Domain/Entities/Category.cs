@@ -10,5 +10,6 @@ namespace Domain.Entities
 
         // 🔄 Navigation property – länkar till användaren som äger kategorin
         public User? User { get; set; }
+        public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     }
 }

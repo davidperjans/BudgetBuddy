@@ -29,6 +29,7 @@ namespace Infrastructure.Services
         {
             return await _dbContext.Transactions
                 .Where(t => t.UserId == userId)
+                .Include(t => t.Category)
                 .OrderByDescending(t => t.Date)
                 .ToListAsync();
         }

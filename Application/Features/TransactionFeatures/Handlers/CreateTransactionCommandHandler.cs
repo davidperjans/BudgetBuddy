@@ -23,7 +23,8 @@ namespace Application.Features.TransactionFeatures.Handlers
                 Amount = request.TransactionDto.Amount,
                 Description = request.TransactionDto.Description,
                 Date = request.TransactionDto.Date,
-                IsIncome = request.TransactionDto.IsIncome
+                IsIncome = request.TransactionDto.IsIncome,
+                CategoryId = request.TransactionDto.CategoryId
             };
 
             var created = await _transactionService.CreateTransactionAsync(transaction);

@@ -16,6 +16,9 @@ namespace Domain.Entities
 
         public decimal Amount { get; set; }
 
+        public Guid? CategoryId { get; set; }
+        public Category? Category { get; set; }
+
         public string Description { get; set; } = null!;
 
         public DateTime Date { get; set; }

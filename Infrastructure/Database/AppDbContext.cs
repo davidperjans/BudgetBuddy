@@ -22,6 +22,15 @@ namespace Infrastructure.Database
         public DbSet<Transaction> Transactions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Transaction>()
+            .HasOne(t => t.Category)
+            .WithMany(c => c.Transactions)
+            .HasForeignKey(t => t.CategoryId)
+            .OnDelete(DeleteBehavior.SetNull); // eller Restrict
+
+            modelBuilder.Entity<Transaction>()
+            .Property(t => t.Amount)
+            .HasPrecision(18, 2);
             base.OnModelCreating(modelBuilder);
             // Configure your entity mappings here
         }

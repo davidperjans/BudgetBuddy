@@ -25,15 +25,11 @@ namespace Application.Features.CategoryFetures.Commands.CreateACategory
         public async Task<OperationResult<string>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
             var dto = request.Dto;
-            bool exist = await _categoryRepository.DoseCategoryExistAsync(dto.Name);
+            bool exist = await _categoryRepository.DoseCategoryExistAsync(dto.Name, dto.UserId);
 
             if (exist) return OperationResult<string>.Failure("Category alredy exist");
 
             var category = _mapper.Map<Category>(dto);
-            category.CategoryId = Guid.NewGuid();
-
-            //TODO: USERID BEHÖVER IMPLEMENTERAS.
-            category.UserId = Guid.Parse("41718d10-7505-425d-b32c-08dd9cfbed43");
 
             await _categoryRepository.AddAsync(category);
 
