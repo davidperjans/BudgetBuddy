@@ -1,0 +1,126 @@
+name: .NET CI with Discord Notifications
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          # Byt vid behov till 9.0.x eller din version
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      # ✅ Skicka Discord-notis vid lyckat bygge
+      - name: Notify Discord (success)
+        if: ${{ success() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+          SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_NUMBER: ${{ github.run_number }}
+          SERVER_URL: ${{ github.server_url }}
+          WORKFLOW: ${{ github.workflow }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          RUN_URL="${SERVER_URL}/${REPO}/actions/runs/${RUN_ID}"
+          COMMIT_URL="${SERVER_URL}/${REPO}/commit/${SHA}"
+          SHORT_SHA=$(echo "$SHA" | cut -c1-7)
+
+          cat <<'JSON' > payload.json
+          {
+            "username": "GitHub Actions",
+            "embeds": [
+              {
+                "title": "✅ .NET Build Passed",
+                "description": "Build klar utan fel.",
+                "color": 3066993,
+                "fields": [
+                  { "name": "Repository", "value": "${REPO}", "inline": true },
+                  { "name": "Branch", "value": "${BRANCH}", "inline": true },
+                  { "name": "Commit", "value": "[${SHORT_SHA}](${COMMIT_URL})", "inline": true },
+                  { "name": "Workflow", "value": "${WORKFLOW}", "inline": true },
+                  { "name": "Run", "value": "[#${RUN_NUMBER}](${RUN_URL})", "inline": true },
+                  { "name": "Triggered by", "value": "${ACTOR}", "inline": true },
+                  { "name": "Event", "value": "${EVENT_NAME}", "inline": true }
+                ],
+                "timestamp": "${{ github.event.repository.pushed_at || '' }}"
+              }
+            ]
+          }
+          JSON
+
+          # Expandera env-variabler i JSON (enkelt ersättningssteg)
+          sed -i "s|\${REPO}|${REPO}|g; s|\${BRANCH}|${BRANCH}|g; s|\${SHORT_SHA}|${SHORT_SHA}|g; s|\${COMMIT_URL}|${COMMIT_URL}|g; s|\${WORKFLOW}|${WORKFLOW}|g; s|\${RUN_NUMBER}|${RUN_NUMBER}|g; s|\${RUN_URL}|${RUN_URL}|g; s|\${ACTOR}|${ACTOR}|g; s|\${EVENT_NAME}|${EVENT_NAME}|g" payload.json
+
+          curl -sS -H "Content-Type: application/json" \
+            -X POST -d @payload.json "$DISCORD_WEBHOOK_URL"
+
+      # ❌ Skicka Discord-notis vid misslyckat bygge
+      - name: Notify Discord (failure)
+        if: ${{ failure() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+          SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_NUMBER: ${{ github.run_number }}
+          SERVER_URL: ${{ github.server_url }}
+          WORKFLOW: ${{ github.workflow }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          RUN_URL="${SERVER_URL}/${REPO}/actions/runs/${RUN_ID}"
+          COMMIT_URL="${SERVER_URL}/${REPO}/commit/${SHA}"
+          SHORT_SHA=$(echo "$SHA" | cut -c1-7)
+
+          cat <<'JSON' > payload.json
+          {
+            "username": "GitHub Actions",
+            "embeds": [
+              {
+                "title": "❌ .NET Build Failed",
+                "description": "Bygget misslyckades. Kolla Actions-loggarna för detaljer.",
+                "color": 15158332,
+                "fields": [
+                  { "name": "Repository", "value": "${REPO}", "inline": true },
+                  { "name": "Branch", "value": "${BRANCH}", "inline": true },
+                  { "name": "Commit", "value": "[${SHORT_SHA}](${COMMIT_URL})", "inline": true },
+                  { "name": "Workflow", "value": "${WORKFLOW}", "inline": true },
+                  { "name": "Run", "value": "[#${RUN_NUMBER}](${RUN_URL})", "inline": true },
+                  { "name": "Triggered by", "value": "${ACTOR}", "inline": true },
+                  { "name": "Event", "value": "${EVENT_NAME}", "inline": true }
+                ]
+              }
+            ]
+          }
+          JSON
+
+          sed -i "s|\${REPO}|${REPO}|g; s|\${BRANCH}|${BRANCH}|g; s|\${SHORT_SHA}|${SHORT_SHA}|g; s|\${COMMIT_URL}|${COMMIT_URL}|g; s|\${WORKFLOW}|${WORKFLOW}|g; s|\${RUN_NUMBER}|${RUN_NUMBER}|g; s|\${RUN_URL}|${RUN_URL}|g; s|\${ACTOR}|${ACTOR}|g; s|\${EVENT_NAME}|${EVENT_NAME}|g" payload.json
+
+          curl -sS -H "Content-Type: application/json" \
+            -X POST -d @payload.json "$DISCORD_WEBHOOK_URL"
